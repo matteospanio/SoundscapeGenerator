@@ -145,3 +145,8 @@ def main():
         logger.info(f"Epoch {epoch + 1}/{num_epochs} - Loss: {loss.item()}")
 
     logger.info("Finished training")
+
+    model.save_pretrained(model_cache_path)
+    artifact = wandb.Artifact("model", type="model")
+    artifact.add_file(model_cache_path)
+    run.log_artifact(artifact)
