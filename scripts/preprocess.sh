@@ -13,9 +13,9 @@
 # description: Slurm job to generate and categorize the spectrograms
 # author: Mehmet Sanisoglu
 
-source $HOME/miniconda3/bin/activate my_env
+source "$HOME"/miniconda3/bin/activate my_env
 
-WORKDIR=$HOME/jobs/SoundscapeGenerator
+WORKDIR="$HOME"/jobs/SoundscapeGenerator
 cd "$WORKDIR" || exit 0  # Create and change to the specified directory
 
 export HYDRA_FULL_ERROR=1

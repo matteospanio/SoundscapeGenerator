@@ -2,7 +2,7 @@
 #SBATCH --job-name dummy_train_riffusion_model
 #SBATCH --output log/%j_out.txt
 #SBATCH --error log/%j_err.txt
-#SBATCH --mail-user mehmet.sanisoglu@studenti.unipd.it
+#SBATCH --mail-user spanio@dei.unipd.it
 #SBATCH --mail-type ALL
 #SBATCH --time 2-20:00:00
 #SBATCH --ntasks=1  # Keep ntasks=1, as torchrun will handle distribution
@@ -13,9 +13,9 @@
 # description: Slurm job to train the riffusion model with emotion tags
 # author: Mehmet Sanisoglu
 
-source $HOME/miniconda3/bin/activate my_env
+source "$HOME"/miniconda3/bin/activate my_env
 
-WORKDIR=$HOME/SoundscapeGenerator
+WORKDIR="$HOME"/jobs/SoundscapeGenerator
 cd "$WORKDIR" || exit 0  # Create and change to the specified directory
 
 echo "HERE"
@@ -30,4 +30,4 @@ export MASTER_ADDR=$(hostname)  # Set the master address to the current node's h
 export MASTER_PORT=50001        # Use a specific port for inter-process communication
 
 # Use torchrun to launch the distributed training
-torchrun --nproc_per_node=2 alternate_train.py  # Use 2 processes (one per GPU)
+torchrun --nproc_per_node=2 alternate_train.py -e 1  # Use 2 processes (one per GPU)

@@ -41,14 +41,15 @@ def parse_args(parser: argparse.ArgumentParser):
         help="The level of logging verbosity",
         default="debug",
     )
+    parser.add_argument("-dst", "--destination", help="Where to save the model")
 
 
 def main():
-
     parser = argparse.ArgumentParser()
     parse_args(parser)
     args = parser.parse_args()
     epochs = args.epochs
+    dst = args.destination
 
     logging.basicConfig(
         level=VERBOSITY_OPTS[args.verbosity],
@@ -72,17 +73,14 @@ def main():
 
     # Initialize WandB only on the main process (rank 0)
     if local_rank == 0:
-        try:
-            run = wandb.init(
-                project="SoundscapeGenerator",
-                reinit=True,  # Ensure a new run is started even if a previous one exists
-                settings=wandb.Settings(
-                    start_method="fork"
-                ),  # Simplify to avoid issues with multiprocessing
-            )
-            logger.info("WandB run initialized")
-        except Exception as e:
-            raise Exception(f"WandB login failed due to {e}")
+        run = wandb.init(
+            project="SoundscapeGenerator",
+            reinit=True,  # Ensure a new run is started even if a previous one exists
+            settings=wandb.Settings(
+                start_method="fork"
+            ),  # Simplify to avoid issues with multiprocessing
+        )
+        logger.info("WandB run initialized")
     else:
         os.environ["WANDB_MODE"] = "disabled"
 
@@ -168,11 +166,15 @@ def main():
 
     # Save the trained model (only in the main process)
     if local_rank == 0:
-        unet.save_pretrained("path/to/save/model")
+        unet.save_pretrained(dst)
+
+        artifact = wandb.Artifact("model", type="model")
+        artifact.add_file(dst)
+        run.log_artifact(artifact)
 
     # Ensure that the WandB run is finished properly (only in main process)
     if local_rank == 0:
-        wandb.finish()
+        run.finish()
 
 
 if __name__ == "__main__":
