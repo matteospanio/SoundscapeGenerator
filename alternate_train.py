@@ -41,7 +41,7 @@ def parse_args(parser: argparse.ArgumentParser):
         help="The level of logging verbosity",
         default="debug",
     )
-    parser.add_argument("-dst", "--destination", help="Where to save the model")
+    # parser.add_argument("-dst", "--destination", help="Where to save the model")
 
 
 def main():
@@ -49,7 +49,7 @@ def main():
     parse_args(parser)
     args = parser.parse_args()
     epochs = args.epochs
-    dst = args.destination
+    # dst = args.destination
 
     logging.basicConfig(
         level=VERBOSITY_OPTS[args.verbosity],
@@ -166,10 +166,10 @@ def main():
 
     # Save the trained model (only in the main process)
     if local_rank == 0:
-        unet.save_pretrained(dst)
+        unet.save_pretrained(model_cache_path)
 
         artifact = wandb.Artifact("model", type="model")
-        artifact.add_file(dst)
+        artifact.add_file(model_cache_path)
         run.log_artifact(artifact)
 
     # Ensure that the WandB run is finished properly (only in main process)
