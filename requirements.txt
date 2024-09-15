@@ -8,7 +8,4 @@ matplotlib~=3.8.4
 scikit-learn~=1.4.2
 diffusers~=0.18.2
 wget~=3.2
-torchaudio~=2.4.0
-torchvision~=0.15.2
-wandb~=0.16.6
 transformers~=4.32.1
